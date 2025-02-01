@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import numpy as np
+import os
 import sklearn
 
 # Fix for compatibility issue
@@ -12,9 +13,16 @@ def main():
     # Initial message
     st.info("We recommend using the Pyradiomics software for feature extraction. Ensure to segment the pancreas to the left of the confluence between the splenic vein and the superior mesenteric vein.")
 
+    # Percorso corretto per il modello nel repository GitHub
+    model_path = os.path.join("models", "top5_rad_model.joblib")
+
     # Load the joblib file
     try:
-        model_data = joblib.load('/Users/claudio.ricci/Desktop/ML_Chat_GPT/app/appv1/app_rad/top5_rad_model.joblib')
+        if not os.path.exists(model_path):
+            st.error(f"Model file not found at {model_path}. Please check that the file is correctly uploaded.")
+            return
+
+        model_data = joblib.load(model_path)
         model = model_data['model']
         scaler = model_data['scaler']
         feature_labels = ['wLLH_FO_RMAD', 'wHLL_GLDM_SDHGLE', 'o_GLCM_CT', 'e_GLDM_SDLGLE', 'e_GLCM_SS']
@@ -63,4 +71,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
